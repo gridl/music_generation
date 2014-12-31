@@ -1,60 +1,63 @@
 from __future__ import division
+import itertools
 import random
 import noise
 
-seed = random.randint(0,1000)
-def gen_perlin(length=200, octaves=5):
-    noise_array = [0] * length
-    max_noise_value = 0.0
+def gen_perlin(num_octaves=5):
+    octaves = []
+    max_possible_value = 0.0
 
-    for octave_num in range(octaves):
+    for octave_num in range(num_octaves):
 
         cur_step_size = 2 ** octave_num
-        # generate the next noise array
-        new_noise_values = gen_octave(length=length, step=cur_step_size)
 
-        # add it to our current noise arrays, scaled by the 1/(2 ** (octaves-octave_num))
+        # make the generator for this octave
+        octaves.append(gen_octave(step=cur_step_size))
+
+    while True:
+        cur_value = 0.0
+        max_possible_value = 0.0
+
+        # go through all the octaves and get their values, scale them and add them to our curent value.
         # (biggest octave should be scaled at 0.5, smallest at 1/2*octave)
-        scale_for_value = 1.0 /  (2 ** (octaves - octave_num))
-        max_noise_value += 1.0 * scale_for_value
-        for index, value in enumerate(new_noise_values):
-            noise_array[index] += value * scale_for_value
 
-    # normalize after everything is done
-    noise_array = [ value / max_noise_value for value in noise_array]
+        for octave_index, octave in enumerate(octaves):
+            scale_for_value = 1.0 /  (2 ** (num_octaves - octave_index))
+            max_possible_value += 1.0 * scale_for_value
+            cur_value += scale_for_value * next(octave)
 
-    return noise_array
+        # normalize after everything is done
+        normalized_value = cur_value / max_possible_value
+        yield normalized_value
 
-def gen_octave(length, step):
+def gen_octave(step):
     prev_value = random.random()
-    for fill_beginning in range(0, length, step):
+    for fill_beginning in itertools.count(0, step=step):
         cur_random_val = random.random()
-        how_many_to_fill = min(step, length - fill_beginning)
+        how_many_to_fill = step
         for how_many_filled in range(how_many_to_fill):
             linear_interpolation_to_new_point = prev_value + (cur_random_val - prev_value) * (how_many_filled / how_many_to_fill)
-            octave.append(linear_interpolation_to_new_point)
+            yield linear_interpolation_to_new_point
 
         prev_value = cur_random_val
 
-    return octave
 
 
-def gen_perlin_ints(lower, upper, length=200):
-    perlin_noise = gen_perlin(length=length)
+def gen_perlin_ints(lower, upper):
+    perlin_noise = gen_perlin()
 
     int_range = upper - lower
 
-    rounded_perlin_noise = [lower + int(noise_val * int_range) for noise_val in perlin_noise]
-
-    return rounded_perlin_noise
+    while True:
+        yield lower + int(next(perlin_noise) * int_range)
 
 def print_perlin(nums):
-    width=10
+    width=80
     for num in nums:
         spacing = int(num * width)
-        print "%1.0f%s" % (num, " " * spacing),
+        print "%1.2f%s" % (num, " " * spacing),
         print "|",
         print " " * (width - spacing)
 
 
-print_perlin(gen_perlin_ints(0,10))
+print_perlin(gen_perlin())
