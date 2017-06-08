@@ -60,4 +60,4 @@ def print_perlin(nums):
         print " " * (width - spacing)
 
 
-print_perlin(gen_perlin())
+# print_perlin(gen_perlin())

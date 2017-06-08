@@ -1,0 +1,20 @@
+so, it ought to be easy enough to set up my already existing artifical evolution code so that it can evolve variables to describe a variety of software instruments - envelopes, waves, lfo, filters, etc.   an artifical evolution for instruments.
+
+
+So that's challenge one.  exposing all of those variables so that the random genome space can code for meaningful instruments.
+
+The more challenging part will be figuring out which notes ought to be played when.  Everything from themes to how the themes interact in the larger piece, (should i hardcode base drops? hrm. )
+
+I'm thinking of using an algorithm based on perlin noise to somehow modulate how 'intense' the music is. like. the pressure of the music.  Does higher pressure music mean fewer rests, more notes? faster notes?
+
+every step of this is hard! awesome.
+
+i am tempted to program the random instrument generator first - that will clearly be pretty fun. but that's where the more discovered section of this problem lies.
+I think the much harder part is how to make meaningful sounding music, that sounds valid to humans and also just generally decent. Planned.
+I should hardcode a selection of instruments (piano, violin, drums?) and then just right at how to make meaningful music.   Maybe get something working before applying the evolution too it to search the problem space.
+
+
+aaaalso how are drums gonna work? a sample player? and it randomly choose the samples from a library? plus effects?
+i've heard of worse ideas.
+
+everything can be a first pass, after all. that way i can spend the most energy on the parts that need it.
